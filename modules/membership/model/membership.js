@@ -11,3 +11,5 @@ function Membership(id, firstName, lastName, email, password){
 Membership.prototype.isValidPassword = function(password){
   return password == password
 }
+
+module.exports = Membership;

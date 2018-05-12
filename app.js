@@ -23,6 +23,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const Membership = require('./modules/membership/model/membership');
+const MembershipRepository = require('./modules/membership/repository/membership_repository');
+const membershipHandler = require('./modules/membership/handler/handler');
+const jwtVerify = require('./middleware/jwt_verify');
+
+let db = new Map();
+db.set(1, new Membership(1, 'Dian','Setiyadi','diyansetiyadi@gmail.com','123456'));
+db.set(2, new Membership(2, 'Alex','Setiyadi','admin@gmail.com','123456'));
+
+
+const membershipRepository = new MembershipRepository(db);
+
+app.post('/auth',membershipHandler.login(membershipRepository));
+
+app.get('/me',jwtVerify('secret'), membershipHandler.getMe(membershipRepository));
+
 app.use('/', (req, res, next) => {
   res.send('Hello Express');
 });
